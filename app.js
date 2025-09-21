@@ -3,13 +3,12 @@ const app = express();
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
+
 app.use(express.json());
 
-const mongoUrl =
-  "mongodb+srv://pyarjanskillprompt_db_user:admin@demoapp.o5ldrem.mongodb.net/?retryWrites=true&w=majority&appName=DemoApp";
-
-const JWT_SECRET =
-  "SuwUNNO/vIUaiuBJV4iotDE5GbqpVyYdb1eH+Vsm1za3oZ1POeedq1L+uLhe/Z2sqD1vV2NiyoRAZeygZG2/Zg==";
+const mongoUrl = process.env.MONGO_URL;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 mongoose
   .connect(mongoUrl)
@@ -90,6 +89,8 @@ app.post("/userdata", async (req, res) => {
   }
 });
 
-app.listen(4001, () => {
+const PORT = process.env.PORT || 4001;
+
+app.listen(PORT, () => {
   console.log("Server is started on port 4001");
 });
