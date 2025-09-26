@@ -10,6 +10,7 @@ app.use(express.json());
 const mongoUrl = process.env.MONGO_URL;
 const JWT_SECRET = process.env.JWT_SECRET;
 
+
 mongoose
   .connect(mongoUrl)
   .then(() => {
@@ -75,17 +76,39 @@ app.post("/login", async (req, res) => {
 
 //api for userData--------------------------------------------->
 
+// app.post("/userdata", async (req, res) => {
+//   const { token } = req.body;
+//   try {
+//     const user = jwt.verify(token, JWT_SECRET);
+//     const userEmail = user.email;
+
+//     user.findOne({ email: userEmail }).then((data) => {
+//       return res.send({ status: "ok", data: data });
+//     });
+//   } catch (error) {
+//     return res.send({ error: error });
+//   }
+// });
+
 app.post("/userdata", async (req, res) => {
   const { token } = req.body;
-  try {
-    const user = jwt.verify(token, JWT_SECRET);
-    const userEmail = user.email;
 
-    user.findOne({ email: userEmail }).then((data) => {
-      return res.send({ status: "ok", data: data });
-    });
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET); // decoded payload
+    const userEmail = decoded.email;
+
+    const user = await User.findOne({ email: userEmail });
+
+    if (!user) {
+      return res
+        .status(404)
+        .send({ status: "error", message: "User not found" });
+    }
+
+    return res.send({ status: "ok", data: user });
   } catch (error) {
-    return res.send({ error: error });
+    console.error(error);
+    return res.status(400).send({ status: "error", error: "Invalid token" });
   }
 });
 
