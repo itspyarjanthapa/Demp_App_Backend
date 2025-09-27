@@ -10,7 +10,6 @@ app.use(express.json());
 const mongoUrl = process.env.MONGO_URL;
 const JWT_SECRET = process.env.JWT_SECRET;
 
-
 mongoose
   .connect(mongoUrl)
   .then(() => {
@@ -76,20 +75,6 @@ app.post("/login", async (req, res) => {
 
 //api for userData--------------------------------------------->
 
-// app.post("/userdata", async (req, res) => {
-//   const { token } = req.body;
-//   try {
-//     const user = jwt.verify(token, JWT_SECRET);
-//     const userEmail = user.email;
-
-//     user.findOne({ email: userEmail }).then((data) => {
-//       return res.send({ status: "ok", data: data });
-//     });
-//   } catch (error) {
-//     return res.send({ error: error });
-//   }
-// });
-
 app.post("/userdata", async (req, res) => {
   const { token } = req.body;
 
@@ -109,6 +94,31 @@ app.post("/userdata", async (req, res) => {
   } catch (error) {
     console.error(error);
     return res.status(400).send({ status: "error", error: "Invalid token" });
+  }
+});
+
+//updateUser ------------------------------------->
+
+app.post("/update-user", async (req, res) => {
+  const { name, email, image, gender, profession } = req.body;
+
+  try {
+    await User.updateOne(
+      { email: email },
+      {
+        $set: {
+          name,
+          email,
+          image,
+          gender,
+          profession,
+        },
+      }
+    );
+    res.send({ status: "ok", data: "updated" });
+  } catch (error) {
+    console.error(error);
+    return res.send({ error: "error" });
   }
 });
 
