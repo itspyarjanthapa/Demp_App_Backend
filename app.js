@@ -122,6 +122,15 @@ app.post("/update-user", async (req, res) => {
   }
 });
 
+app.get("/getAll-users", async (req, res) => {
+  try { 
+    const data = await User.find({});
+    res.send({ status: "ok", data: data });
+  } catch (error) {
+    res.send({ error: error });
+  }
+});
+
 const PORT = process.env.PORT || 4001;
 
 app.listen(PORT, () => {
