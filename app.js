@@ -123,7 +123,7 @@ app.post("/update-user", async (req, res) => {
 });
 
 app.get("/getAll-users", async (req, res) => {
-  try { 
+  try {
     const data = await User.find({});
     res.send({ status: "ok", data: data });
   } catch (error) {
